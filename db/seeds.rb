@@ -2,80 +2,90 @@
 
 puts "Seeding DevHub data..."
 
-# WARNING: this will wipe existing data for training purposes.
-Task.destroy_all
-Project.destroy_all
-User.destroy_all
+# Temporarily disable SolidQueue and run jobs inline while seeding,
+# so we don't touch the solid_queue_jobs table (which doesn't exist in Render DB).
+old_adapter = ActiveJob::Base.queue_adapter
+ActiveJob::Base.queue_adapter = :inline
 
-# --- Users ---
-admin = User.create!(
-  email: "auth-admin@test.com",
-  password: "password"
-)
+begin
+  # WARNING: this will wipe existing data for training purposes.
+  Task.destroy_all
+  Project.destroy_all
+  User.destroy_all
 
-owner = User.create!(
-  email: "auth-owner@test.com",
-  password: "password"
-)
+  # --- Users ---
+  admin = User.create!(
+    email: "auth-admin@test.com",
+    password: "password"
+  )
 
-viewer = User.create!(
-  email: "auth-viewer@test.com",
-  password: "password"
-)
+  owner = User.create!(
+    email: "auth-owner@test.com",
+    password: "password"
+  )
 
-puts "Users created: #{User.count}"
+  viewer = User.create!(
+    email: "auth-viewer@test.com",
+    password: "password"
+  )
 
-# --- Projects (no status column on Project) ---
-project1 = Project.create!(
-  name: "Frontend Migration",
-  description: "Migrate frontend to React + Apollo"
-)
+  puts "Users created: #{User.count}"
 
-project2 = Project.create!(
-  name: "Backend API Upgrade",
-  description: "Refactor Rails API and GraphQL schema"
-)
+  # --- Projects (no status column on Project) ---
+  project1 = Project.create!(
+    name: "Frontend Migration",
+    description: "Migrate frontend to React + Apollo"
+  )
 
-project3 = Project.create!(
-  name: "Mobile App Redesign",
-  description: "New UX for mobile client"
-)
+  project2 = Project.create!(
+    name: "Backend API Upgrade",
+    description: "Refactor Rails API and GraphQL schema"
+  )
 
-puts "Projects created: #{Project.count}"
+  project3 = Project.create!(
+    name: "Mobile App Redesign",
+    description: "New UX for mobile client"
+  )
 
-# --- Tasks ---
-# We use status values expected by the app (e.g. pending, in_progress, done)
-Task.create!(
-  title: "Setup Apollo Client",
-  description: "Configure Apollo Client and HTTP link",
-  status: "pending",
-  assignee: admin,
-  project: project1
-)
+  puts "Projects created: #{Project.count}"
 
-Task.create!(
-  title: "Implement login mutation",
-  description: "Wire up login form to /api/login and GraphQL",
-  status: "in_progress",
-  assignee: owner,
-  project: project1
-)
+  # --- Tasks ---
+  # We use status values expected by the app (e.g. pending, in_progress, done)
+  Task.create!(
+    title: "Setup Apollo Client",
+    description: "Configure Apollo Client and HTTP link",
+    status: "pending",
+    assignee: admin,
+    project: project1
+  )
 
-Task.create!(
-  title: "Fix CORS issues",
-  description: "Allow frontend Render origin and credentials",
-  status: "done",
-  assignee: admin,
-  project: project2
-)
+  Task.create!(
+    title: "Implement login mutation",
+    description: "Wire up login form to /api/login and GraphQL",
+    status: "in_progress",
+    assignee: owner,
+    project: project1
+  )
 
-Task.create!(
-  title: "Refactor GraphQL schema",
-  description: "Clean up types and add MyTasks query",
-  status: "pending",
-  assignee: viewer,
-  project: project2
-)
+  Task.create!(
+    title: "Fix CORS issues",
+    description: "Allow frontend Render origin and credentials",
+    status: "done",
+    assignee: admin,
+    project: project2
+  )
 
-puts "Tasks created: #{Task.count}"
-puts "Seeding completed!"
+  Task.create!(
+    title: "Refactor GraphQL schema",
+    description: "Clean up types and add MyTasks query",
+    status: "pending",
+    assignee: viewer,
+    project: project2
+  )
+
+  puts "Tasks created: #{Task.count}"
+  puts "Seeding completed!"
+ensure
+  # Restore original adapter when finished
+  ActiveJob::Base.queue_adapter = old_adapter
+end
