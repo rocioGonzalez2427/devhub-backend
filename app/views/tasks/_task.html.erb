@@ -1,0 +1,48 @@
+<div id="<%= dom_id task %>">
+  <div>
+    <strong>Title:</strong>
+    <%= task.title %>
+  </div>
+
+  <div>
+    <strong>Description:</strong>
+    <%= task.description %>
+  </div>
+
+  <div>
+    <strong>Status:</strong>
+    <%= task.status %>
+  </div>
+
+  <div>
+    <strong>Project:</strong>
+    <%= task.project&.name %>
+  </div>
+
+  <p>
+    <strong>Assigned to:</strong>
+    <%= @task.assignee&.email || "No one yet" %>
+  </p>
+
+
+</div>
+
+<hr>
+
+<h2>Activity history</h2>
+
+<% if @activities.any? %>
+  <ul>
+    <% @activities.each do |activity| %>
+      <li>
+        <strong><%= activity.action.humanize %></strong>
+        <span>
+          –
+          <%= activity.created_at.strftime("%Y-%m-%d %H:%M") %>
+        </span>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No activity recorded yet.</p>
+<% end %>

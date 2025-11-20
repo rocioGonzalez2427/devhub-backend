@@ -1,0 +1,42 @@
+<h1>Task <%= @task.id %> - <%= @task.title %></h1>
+
+<p><strong>Status:</strong> <%= @task.status %></p>
+
+<p>
+  <strong>Project:</strong>
+  <% if @task.project %>
+    <%= link_to @task.project.name, admin.project_path(@task.project) %>
+  <% else %>
+    -
+  <% end %>
+</p>
+
+<p>
+  <strong>Assignee:</strong>
+  <% if @task.assignee.is_a?(User) %>
+    <%= @task.assignee.email %>
+  <% else %>
+    -
+  <% end %>
+</p>
+
+<p><strong>Description:</strong></p>
+<p><%= @task.description.presence || "(no description)" %></p>
+
+<h2>Activities</h2>
+<% if @task.activities.any? %>
+  <ul>
+    <% @task.activities.order(created_at: :desc).each do |activity| %>
+      <li>
+        <strong><%= activity.action %></strong>
+        at <%= activity.created_at.strftime("%Y-%m-%d %H:%M") %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No activities for this task yet.</p>
+<% end %>
+
+<p>
+  <%= link_to "Back to Admin Tasks", admin.tasks_path %>
+</p>

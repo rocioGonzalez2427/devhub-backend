@@ -1,0 +1,28 @@
+<h1>Projects (Admin)</h1>
+
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Tasks count</th>
+      <th>Created at</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each do |project| %>
+      <tr>
+        <td><%= project.id %></td>
+        <td><%= project.name %></td>
+        <td><%= project.tasks.count %></td>
+        <td><%= project.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+        <td>
+          <%= link_to "Show", project_path(project), target: "_blank" %>
+          |
+          <%= link_to "Admin view", admin.project_path(project) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,43 @@
+<h1>Tasks (Admin)</h1>
+
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Project</th>
+      <th>Assignee</th>
+      <th>Created at</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tasks.each do |task| %>
+      <tr>
+        <td><%= task.id %></td>
+        <td><%= task.title %></td>
+        <td><%= task.status %></td>
+        <td>
+          <% if task.project %>
+            <%= link_to task.project.name, admin.project_path(task.project) %>
+          <% else %>
+            -
+          <% end %>
+        </td>
+        <td>
+          <% if task.assignee.is_a?(User) %>
+            <%= task.assignee.email %>
+          <% else %>
+            -
+          <% end %>
+        </td>
+        <td><%= task.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+        <td>
+          <%= link_to "Admin view", admin.task_path(task) %> |
+          <%= link_to "App view", task_path(task), target: "_blank" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

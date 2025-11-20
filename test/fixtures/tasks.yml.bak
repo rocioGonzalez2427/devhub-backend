@@ -1,0 +1,13 @@
+one:
+  id: 1
+  title: "First task"
+  description: "Sample task for tests"
+  status: "pending"
+  project: one
+
+two:
+  id: 2
+  title: "Second task"
+  description: "Another sample task"
+  status: "done"
+  project: one

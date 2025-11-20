@@ -1,0 +1,49 @@
+<%= form_with(model: task) do |form| %>
+  <% if task.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h2>
+
+      <ul>
+        <% task.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.textarea :description %>
+  </div>
+
+  <div>
+    <%= form.label :status, style: "display: block" %>
+    <%= form.select :status, Task::STATUSES.map { |s| [s.humanize, s] } %>
+  </div>
+
+  <div>
+    <%= form.label :project_id, "Project", style: "display: block" %>
+    <%= form.collection_select :project_id, Project.all, :id, :name, prompt: "Select a project" %>
+  </div>
+
+  <div>
+    <%= form.label :assignee_id, "Assign to" %><br>
+
+    <%= form.collection_select :assignee_id,
+          User.all,
+          :id,
+          :email,
+          include_blank: "No one" %>
+
+    <%= form.hidden_field :assignee_type, value: "User" %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

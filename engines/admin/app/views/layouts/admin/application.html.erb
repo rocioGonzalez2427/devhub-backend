@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DevHub Admin</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- Admin Engine Styles -->
+    <%= stylesheet_link_tag "admin/application", media: "all" %>
+  </head>
+
+  <body>
+    <header style="padding: 10px; background: #222; color: white;">
+      <h2>DevHub Admin Panel</h2>
+      <nav>
+        <a href="/admin" style="color: #9cf; margin-right: 15px;">Dashboard</a>
+        <a href="/admin/projects" style="color: #9cf; margin-right: 15px;">Projects</a>
+        <a href="/admin/tasks" style="color: #9cf;">Tasks</a>
+      </nav>
+    </header>
+
+    <main style="padding: 20px;">
+      <%= yield %>
+    </main>
+  </body>
+</html>

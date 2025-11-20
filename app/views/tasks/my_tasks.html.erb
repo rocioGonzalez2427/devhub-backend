@@ -1,0 +1,40 @@
+<h1>My Tasks</h1>
+
+<p>
+  Filter:
+  <%= link_to "All", my_tasks_path,
+        style: (@status_filter.blank? ? "font-weight: bold;" : "") %> |
+  <%= link_to "Pending", my_tasks_path(status: "pending"),
+        style: (@status_filter == "pending" ? "font-weight: bold;" : "") %> |
+  <%= link_to "In progress", my_tasks_path(status: "in_progress"),
+        style: (@status_filter == "in_progress" ? "font-weight: bold;" : "") %> |
+  <%= link_to "Done", my_tasks_path(status: "done"),
+        style: (@status_filter == "done" ? "font-weight: bold;" : "") %>
+</p>
+
+<% if @tasks.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Project</th>
+        <th>Status</th>
+        <th>Activity count</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @tasks.each do |task| %>
+        <tr>
+          <td><%= task.title %></td>
+          <td><%= task.project&.name %></td>
+          <td><%= task.status %></td>
+          <td><%= task.activities.count %></td>
+          <td><%= link_to "View", task_path(task) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>You don't have any assigned tasks yet.</p>
+<% end %>
