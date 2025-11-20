@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   # GraphQL endpoint
+  get "up", to: "rails/health#show", as: :rails_health_check
+
   post "/graphql", to: "graphql#execute"
 
   resources :projects
