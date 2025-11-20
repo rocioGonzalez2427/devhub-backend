@@ -2,33 +2,30 @@
 
 puts "Seeding DevHub data..."
 
-# Cuidado: esto borra datos existentes. En este training está bien porque la DB de prod está vacía.
+# WARNING: this will wipe existing data for training purposes.
 Task.destroy_all
 Project.destroy_all
 User.destroy_all
 
 # --- Users ---
 admin = User.create!(
-  name: "Auth Admin",
   email: "auth-admin@test.com",
   password: "password"
 )
 
 owner = User.create!(
-  name: "Auth Owner",
   email: "auth-owner@test.com",
   password: "password"
 )
 
 viewer = User.create!(
-  name: "Auth Viewer",
   email: "auth-viewer@test.com",
   password: "password"
 )
 
 puts "Users created: #{User.count}"
 
-# --- Projects (sin status, porque Project NO tiene columna status) ---
+# --- Projects (no status column on Project) ---
 project1 = Project.create!(
   name: "Frontend Migration",
   description: "Migrate frontend to React + Apollo"
@@ -47,7 +44,7 @@ project3 = Project.create!(
 puts "Projects created: #{Project.count}"
 
 # --- Tasks ---
-# Usamos los mismos status que tu frontend (pending, in_progress, done)
+# We use status values expected by the app (e.g. pending, in_progress, done)
 Task.create!(
   title: "Setup Apollo Client",
   description: "Configure Apollo Client and HTTP link",
