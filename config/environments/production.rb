@@ -49,9 +49,13 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process Active Job backend.
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # Use a simple in-process adapter in production for this training app.
+  config.active_job.queue_adapter = :async
+  # If you prefer to run jobs immediately and synchronously, you can use:
+  # config.active_job.queue_adapter = :inline
+
+  # Do not configure SolidQueue in Render free tier (no extra DB tables)
+  # config.solid_queue.connects_to = { database: { writing: :queue } }
 
   # Email settings (kept as is)
   config.action_mailer.default_url_options = { host: "example.com" }
