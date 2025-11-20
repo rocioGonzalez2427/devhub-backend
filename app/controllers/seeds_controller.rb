@@ -1,5 +1,8 @@
-class SeedsController < ApplicationController
-    # Protección contra CSRF no aplica para GET así que no hay problema
+# app/controllers/seeds_controller.rb
+class SeedsController < ActionController::Base
+    # We don't want any app-wide filters (like authenticate_user!)
+    protect_from_forgery with: :null_session
+  
     def run
       begin
         load Rails.root.join("db/seeds.rb")
