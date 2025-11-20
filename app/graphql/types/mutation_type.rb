@@ -37,31 +37,42 @@ module Types
       argument :status, String, required: false
     end
 
-    def create_task(project_id:, title:, description: nil, status: "pending")
+    def create_task(project_id:, title:, description: nil, status: nil)
       user = context[:current_user]
-      return nil unless user
+      raise GraphQL::ExecutionError, "You must be logged in to create tasks." unless user
     
       project = Project.find_by(id: project_id)
-      return nil unless project
+      raise GraphQL::ExecutionError, "Project not found with id=#{project_id}." unless project
     
-      # Only project owner or admin can create tasks in this project
+      # 🔐 Autorización: solo admin o owner
       unless user.admin? || user.project_owner?(project)
-        return nil
+        raise GraphQL::ExecutionError,
+              "You are not allowed to create tasks in this project."
+      end
+    
+      # 🟡 Status por defecto y validación previa
+      status_to_use = status.presence || "pending"
+    
+      unless Task::STATUSES.include?(status_to_use)
+        raise GraphQL::ExecutionError,
+              "Invalid status '#{status_to_use}'. Allowed: #{Task::STATUSES.join(', ')}"
       end
     
       task = project.tasks.build(
-        title: title,
+        title:       title,
         description: description,
-        status: status,
-        assignee: user # optional: default assignee is the creator
+        status:      status_to_use,
+        assignee:    user
       )
     
       if task.save
         task
       else
-        nil
+        # Incluimos mensajes de validación para que Apollo los reciba
+        raise GraphQL::ExecutionError, task.errors.full_messages.join(", ")
       end
     end
+    
 
     # Change the status of a task using TaskStatusUpdater
     field :change_task_status, Types::TaskType, null: true do
