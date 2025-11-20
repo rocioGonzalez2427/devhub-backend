@@ -22,4 +22,8 @@ Rails.application.routes.draw do
     get    "current_user", to: "sessions#current"  # Api::SessionsController#current
   end
 
+  if Rails.env.production?
+    get "/run_seeds", to: "seeds#run"
+  end
+  
 end
