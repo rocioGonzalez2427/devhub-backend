@@ -16,38 +16,50 @@ begin
   # --- Users ---
   admin = User.create!(
     email: "auth-admin@test.com",
-    password: "password"
+    password: "password",
+    role: "admin"   # 👈 now this is really an admin in the app
   )
 
   owner = User.create!(
     email: "auth-owner@test.com",
-    password: "password"
+    password: "password",
+    role: "member"  # explicit, matches default
   )
 
   viewer = User.create!(
     email: "auth-viewer@test.com",
-    password: "password"
+    password: "password",
+    role: "member"  # explicit, matches default
   )
 
   puts "Users created: #{User.count}"
+  puts "Admin user: #{admin.email} (role=#{admin.role})"
+  puts "Owner user: #{owner.email} (role=#{owner.role})"
+  puts "Viewer user: #{viewer.email} (role=#{viewer.role})"
 
   # --- Projects (no status column on Project) ---
   project1 = Project.create!(
     name: "Frontend Migration",
-    description: "Migrate frontend to React + Apollo"
+    description: "Migrate frontend to React + Apollo",
+    owner: owner   # 👈 project owner: auth-owner@test.com
   )
 
   project2 = Project.create!(
     name: "Backend API Upgrade",
-    description: "Refactor Rails API and GraphQL schema"
+    description: "Refactor Rails API and GraphQL schema",
+    owner: admin   # 👈 project owner: auth-admin@test.com
   )
 
   project3 = Project.create!(
     name: "Mobile App Redesign",
-    description: "New UX for mobile client"
+    description: "New UX for mobile client",
+    owner: owner   # 👈 project owner: auth-owner@test.com
   )
 
   puts "Projects created: #{Project.count}"
+  puts "Project1 owner: #{project1.owner.email if project1.owner}"
+  puts "Project2 owner: #{project2.owner.email if project2.owner}"
+  puts "Project3 owner: #{project3.owner.email if project3.owner}"
 
   # --- Tasks ---
   # We use status values expected by the app (e.g. pending, in_progress, done)
